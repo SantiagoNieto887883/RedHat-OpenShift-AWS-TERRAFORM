@@ -1,0 +1,19 @@
+terraform {
+
+  required_version = ">= 1.9"
+
+  required_providers {
+
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 6.0"
+    }
+
+    rhcs = {
+      source  = "terraform-redhat/rhcs"
+      version = "~> 1.7"
+    }
+
+  }
+
+}

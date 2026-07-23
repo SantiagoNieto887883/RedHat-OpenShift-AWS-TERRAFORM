@@ -1,0 +1,639 @@
+apiVersion: v1
+automountServiceAccountToken: true
+kind: ServiceAccount
+metadata:
+  name: site24x7
+  namespace: site24x7
+---
+apiVersion: v1
+automountServiceAccountToken: false
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: exporter
+    app.kubernetes.io/name: site24x7-kube-state-metrics
+    app.kubernetes.io/version: 2.17.0
+  name: site24x7-kube-state-metrics
+  namespace: site24x7
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: site24x7
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - nodes
+  - pods
+  - services
+  - resourcequotas
+  - replicationcontrollers
+  - limitranges
+  - persistentvolumeclaims
+  - persistentvolumes
+  - namespaces
+  - endpoints
+  - componentstatuses
+  - events
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resourceNames:
+  - site24x7
+  resources:
+  - configmaps
+  verbs:
+  - list
+  - watch
+  - get
+  - patch
+- apiGroups:
+  - extensions
+  resources:
+  - daemonsets
+  - deployments
+  - replicasets
+  - ingresses
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - daemonsets
+  - deployments
+  - replicasets
+  - statefulsets
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - events.k8s.io
+  resources:
+  - events
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - batch
+  resources:
+  - cronjobs
+  - jobs
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - autoscaling
+  resources:
+  - horizontalpodautoscalers
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - coordination.k8s.io
+  resourceNames:
+  - site24x7-agent
+  resources:
+  - leases
+  verbs:
+  - list
+  - patch
+  - get
+  - create
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - nodes/metrics
+  - nodes/stats
+  - nodes/metrics/cadvisor
+  - nodes/proxy
+  verbs:
+  - get
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+- nonResourceURLs:
+  - /metrics
+  - /healthz
+  - /livez
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - pods
+  - nodes
+  - namespaces
+  - configmaps
+  - persistentvolumes
+  - persistentvolumeclaims
+  - resourcequotas
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - apps
+  resources:
+  - daemonsets
+  - deployments
+  - statefulsets
+  - replicasets
+  - controllerrevisions
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  - cronjobs
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - autoscaling
+  resources:
+  - horizontalpodautoscalers
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - kubevirt.io
+  resources:
+  - virtualmachines
+  - virtualmachineinstances
+  verbs:
+  - list
+  - watch
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/component: exporter
+    app.kubernetes.io/name: site24x7-kube-state-metrics
+    app.kubernetes.io/version: 2.17.0
+  name: site24x7-kube-state-metrics
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - secrets
+  - nodes
+  - pods
+  - services
+  - serviceaccounts
+  - resourcequotas
+  - replicationcontrollers
+  - limitranges
+  - persistentvolumeclaims
+  - persistentvolumes
+  - namespaces
+  - endpoints
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - statefulsets
+  - daemonsets
+  - deployments
+  - replicasets
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - batch
+  resources:
+  - cronjobs
+  - jobs
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - autoscaling
+  resources:
+  - horizontalpodautoscalers
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+- apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - discovery.k8s.io
+  resources:
+  - endpointslices
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - storageclasses
+  - volumeattachments
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - mutatingwebhookconfigurations
+  - validatingwebhookconfigurations
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - networkpolicies
+  - ingressclasses
+  - ingresses
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - clusterrolebindings
+  - clusterroles
+  - rolebindings
+  - roles
+  verbs:
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: site24x7
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: site24x7
+subjects:
+- kind: ServiceAccount
+  name: site24x7
+  namespace: site24x7
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/component: exporter
+    app.kubernetes.io/name: site24x7-kube-state-metrics
+    app.kubernetes.io/version: 2.17.0
+  name: site24x7-kube-state-metrics
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: site24x7-kube-state-metrics
+subjects:
+- kind: ServiceAccount
+  name: site24x7-kube-state-metrics
+  namespace: site24x7
+---
+apiVersion: v1
+data:
+  1MIN: |
+    {
+      "Pods": "90",
+      "Nodes": "90",
+      "Namespaces": "90",
+      "HorizontalPodAutoscalers": "-1",
+      "DaemonSets": "90",
+      "Deployments": "60",
+      "Endpoints": "-1",
+      "ReplicaSets": "-1",
+      "StatefulSets": "90",
+      "Services": "-1",
+      "PV": "-1",
+      "PersistentVolumeClaims": "-1",
+      "Jobs": "-1",
+      "Ingresses": "-1"
+    }
+  CLUSTER_AGENT_VERSION: "103"
+  NODE_AGENT_VERSION: "22100"
+  SETTINGS: |
+    {
+      "kubernetes": "300",
+      "daemonsets": "300",
+      "deployments": "300",
+      "statefulsets": "300",
+      "pods": "300",
+      "nodes": "300",
+      "services": "300",
+      "replicasets": "900",
+      "ingresses": "300",
+      "jobs": "300",
+      "pv": "300",
+      "persistentvolumeclaim": "300",
+      "componentstatuses": "300",
+      "horizontalpodautoscalers": "300",
+      "endpoints": "3600",
+      "namespaces": "300",
+      "eventcollector": "60",
+      "npcdatacollector": "300",
+      "npcdatacollector_discovery": "900",
+      "resourcedependency": "300",
+      "workloadsdatacollector": "300",
+      "workloadsdatacollector_discovery": "900",
+      "clustermetricsaggregator": "300",
+      "sidecarnpccollector": "300",
+      "sidecarnpccollector_discovery": "900",
+      "dcinit": "900",
+      "clusteragent": "1",
+      "ksm": "1",
+      "guidancemetrics": "20600",
+      "termination": "900",
+      "kubelet": "300",
+      "metadata": "20600",
+      "prometheus_integration": "1",
+      "plugin_integration": "1",
+      "database_integration": "1",
+      "ksmprocessor": "1",
+      "kubeletdatapersistence": "1",
+      "servicerelationdataprocessor": "1",
+      "yamlfetcher": "60"
+    }
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: agent
+    app.kubernetes.io/name: site24x7
+    app.kubernetes.io/owner: site24x7
+  name: site24x7
+  namespace: site24x7
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: exporter
+    app.kubernetes.io/name: site24x7-kube-state-metrics
+    app.kubernetes.io/version: 2.17.0
+  name: site24x7-kube-state-metrics
+  namespace: site24x7
+spec:
+  clusterIP: None
+  ports:
+  - name: http-metrics
+    port: 8080
+    targetPort: http-metrics
+  - name: telemetry
+    port: 8081
+    targetPort: telemetry
+  selector:
+    app.kubernetes.io/name: site24x7-kube-state-metrics
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: site24x7-kube-state-metrics
+    app.kubernetes.io/component: exporter
+    app.kubernetes.io/name: site24x7-kube-state-metrics
+    app.kubernetes.io/version: 2.17.0
+  name: site24x7-kube-state-metrics
+  namespace: site24x7
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: site24x7-kube-state-metrics
+  template:
+    metadata:
+      labels:
+        app: site24x7-kube-state-metrics
+        app.kubernetes.io/component: exporter
+        app.kubernetes.io/name: site24x7-kube-state-metrics
+        app.kubernetes.io/version: 2.17.0
+    spec:
+      automountServiceAccountToken: true
+      containers:
+      - image: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.17.0
+        livenessProbe:
+          httpGet:
+            path: /livez
+            port: http-metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+        name: site24x7-kube-state-metrics
+        ports:
+        - containerPort: 8080
+          name: http-metrics
+        - containerPort: 8081
+          name: telemetry
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: telemetry
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          #runAsUser: 65534
+          seccompProfile:
+            type: RuntimeDefault
+      nodeSelector:
+        kubernetes.io/os: linux
+      serviceAccountName: site24x7-kube-state-metrics
+      tolerations:
+      - operator: Exists
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: site24x7-agent
+  namespace: site24x7
+spec:
+  selector:
+    matchLabels:
+      app: site24x7-agent
+  template:
+    metadata:
+      labels:
+        app: site24x7-agent
+      name: site24x7-agent
+    spec:
+      containers:
+      - env:
+        - name: KEY
+          valueFrom:
+            secretKeyRef:
+              key: KEY
+              name: site24x7-agent
+        - name: installer
+          value: kubernetes
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        image: site24x7/docker-agent:release22200
+        imagePullPolicy: Always
+        name: site24x7-agent
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: /host/proc
+          name: procfs
+          readOnly: true
+        - mountPath: /host/sys/
+          name: sysfs
+          readOnly: true
+        - mountPath: /host/var/
+          name: varfs
+          readOnly: true
+        - mountPath: /host/etc/
+          name: etcfs
+          readOnly: true
+        - mountPath: /opt/site24x7
+          name: site24x7-agent
+        - mountPath: /etc/site24x7/clusterconfig
+          name: clusterconfig
+          readOnly: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      serviceAccountName: site24x7
+      tolerations:
+      - operator: Exists
+      volumes:
+      - hostPath:
+          path: /proc
+        name: procfs
+      - hostPath:
+          path: /sys/
+        name: sysfs
+      - hostPath:
+          path: /var/
+        name: varfs
+      - hostPath:
+          path: /etc/
+        name: etcfs
+      - emptyDir: {}
+        name: site24x7-agent
+      - configMap:
+          items:
+          - key: SETTINGS
+            path: SETTINGS
+          - key: 1MIN
+            path: 1MIN
+          name: site24x7
+          optional: true
+        name: clusterconfig
+  updateStrategy:
+    type: RollingUpdate
+---
+apiVersion: coordination.k8s.io/v1
+kind: Lease
+metadata:
+  name: site24x7-agent
+  namespace: site24x7
+spec:
+  acquireTime: "2025-11-05T00:11:44.423098Z"
+  holderIdentity: site24x7-agent-pod
+  leaseDurationSeconds: 60
+  leaseTransitions: 0
+  renewTime: "2025-11-07T20:13:20.492161Z"

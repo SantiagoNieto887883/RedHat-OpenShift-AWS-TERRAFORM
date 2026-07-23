@@ -1,0 +1,52 @@
+
+Note: Objects have changed outside of Terraform
+
+Terraform detected the following changes made outside of Terraform since the
+last "terraform apply" which may have affected this plan:
+
+  # module.rosa_hcp.module.rosa_cluster_hcp.rhcs_cluster_rosa_hcp.rosa_hcp_cluster has changed
+  ~ resource "rhcs_cluster_rosa_hcp" "rosa_hcp_cluster" {
+      ~ console_url                         = "" -> "https://console-openshift-console.apps.rosa.rosa-site24x7.91bi.p3.openshiftapps.com"
+        id                                  = "2rncsf92g4ptb3tfn3viv8jng3km1pjj"
+        name                                = "rosa-site24x7"
+        # (29 unchanged attributes hidden)
+    }
+
+
+Unless you have made equivalent changes to your configuration, or ignored the
+relevant attributes using ignore_changes, the following plan may include
+actions to undo or respond to these changes.
+
+─────────────────────────────────────────────────────────────────────────────
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  ~ update in-place
+
+Terraform will perform the following actions:
+
+  # module.rosa_hcp.module.rosa_cluster_hcp.rhcs_cluster_rosa_hcp.rosa_hcp_cluster will be updated in-place
+  ~ resource "rhcs_cluster_rosa_hcp" "rosa_hcp_cluster" {
+      ~ api_url                             = "https://api.rosa-site24x7.91bi.p3.openshiftapps.com:443" -> (known after apply)
+      ~ channel                             = "stable-4.19" -> (known after apply)
+      ~ channel_group                       = "stable" -> (known after apply)
+      ~ console_url                         = "https://console-openshift-console.apps.rosa.rosa-site24x7.91bi.p3.openshiftapps.com" -> (known after apply)
+      ~ current_version                     = "4.19.3" -> (known after apply)
+      ~ domain                              = "rosa-site24x7.91bi.p3.openshiftapps.com" -> (known after apply)
+        id                                  = "2rncsf92g4ptb3tfn3viv8jng3km1pjj"
+      + log_forwarder_ids                   = (known after apply)
+        name                                = "rosa-site24x7"
+      ~ ocm_properties                      = {
+          - "rosa_creator_arn" = "arn:aws:sts::015688123302:assumed-role/OrganizationAccountAccessRole/aws-go-sdk-1784749075171020200"
+          - "rosa_tf_commit"   = "f77dde5"
+          - "rosa_tf_version"  = "1.7.7"
+        } -> (known after apply)
+      ~ properties                          = {
+          ~ "rosa_creator_arn" = "arn:aws:sts::015688123302:assumed-role/OrganizationAccountAccessRole/aws-go-sdk-1784749075171020200" -> "arn:aws:sts::015688123302:assumed-role/OrganizationAccountAccessRole/aws-go-sdk-1784772228360611900"
+        }
+      ~ state                               = "ready" -> (known after apply)
+      ~ version                             = "4.19.3" -> "4.19.38"
+        # (20 unchanged attributes hidden)
+    }
+
+Plan: 0 to add, 1 to change, 0 to destroy.

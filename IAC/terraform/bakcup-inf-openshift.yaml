@@ -1,0 +1,51 @@
+apiVersion: config.openshift.io/v1
+kind: Infrastructure
+metadata:
+  annotations:
+    include.release.openshift.io/ibm-cloud-managed: "true"
+    include.release.openshift.io/self-managed-high-availability: "true"
+    release.openshift.io/create-only: "true"
+  creationTimestamp: "2026-07-21T16:02:11Z"
+  generation: 2
+  labels:
+    hypershift.openshift.io/managed: "true"
+  name: cluster
+  ownerReferences:
+  - apiVersion: config.openshift.io/v1
+    kind: ClusterVersion
+    name: version
+    uid: 6e89bf9c-d55e-43fd-8923-064abc70e1e4
+  resourceVersion: "1483"
+  uid: 9fd77cc3-570e-4e3d-993f-911a2d11decb
+spec:
+  cloudConfig:
+    name: ""
+  platformSpec:
+    aws: {}
+    type: AWS
+status:
+  apiServerInternalURI: https://api.rosa-site24x7.hypershift.local:443
+  apiServerURL: https://api.rosa-site24x7.gp23.p3.openshiftapps.com:443
+  controlPlaneTopology: External
+  cpuPartitioning: None
+  etcdDiscoveryDomain: rosa.rosa-site24x7.gp23.p3.openshiftapps.com
+  infrastructureName: 2rmkfcm5j9nkt9oamj0i6h3fku1tgjok
+  infrastructureTopology: HighlyAvailable
+  platform: AWS
+  platformStatus:
+    aws:
+      region: us-east-1
+      resourceTags:
+      - key: api.openshift.com/environment
+        value: production
+      - key: api.openshift.com/id
+        value: 2rmkfcm5j9nkt9oamj0i6h3fku1tgjok
+      - key: api.openshift.com/legal-entity-id
+        value: 3G8s9kUXS32omRvC3bdbhQxgyOn
+      - key: api.openshift.com/name
+        value: rosa-site24x7
+      - key: red-hat-clustertype
+        value: rosa
+      - key: red-hat-managed
+        value: "true"
+    type: AWS
